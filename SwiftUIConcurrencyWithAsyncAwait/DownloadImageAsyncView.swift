@@ -32,9 +32,20 @@ class DownloadImageAsyncViewModel: ObservableObject {
     var loader = DownloadImageAsyncImageLoader()
     
     func fetchImage() {
+        //Direct allocation
         //self.image = UIImage(systemName: "heart.fill")
+        
+        //Download with Escaping closure
         loader.downloadWithEscaping { [weak self] image,error in
-            self?.image = image
+//            if let image = image {
+//                self?.image = image
+//            } else {
+//                self?.image = UIImage(systemName: "heart.fill")
+//            }
+            DispatchQueue.main.async {
+                self?.image = image
+            }
+            
         }
     }
 }
@@ -47,7 +58,7 @@ struct DownloadImageAsyncView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100,height: 100)
+                    .frame(width: 250,height: 250)
             }
         }
         .onAppear {
