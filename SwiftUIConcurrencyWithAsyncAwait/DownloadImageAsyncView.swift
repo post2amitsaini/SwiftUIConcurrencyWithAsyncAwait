@@ -37,6 +37,15 @@ class DownloadImageAsyncImageLoader {
             .mapError( { $0 })
             .eraseToAnyPublisher()
     }
+    
+    func downloadWithAsync() async throws -> UIImage? {
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            return handleResponse(data: data, response: response)
+        } catch {
+            throw error
+        }
+    }
 }
 
 class DownloadImageAsyncViewModel: ObservableObject {
@@ -44,7 +53,7 @@ class DownloadImageAsyncViewModel: ObservableObject {
     var loader = DownloadImageAsyncImageLoader()
     var cancellable = Set<AnyCancellable>()
     
-    func fetchImage() {
+    func fetchImage() async {
         //Direct allocation
         //self.image = UIImage(systemName: "heart.fill")
         
@@ -73,14 +82,23 @@ class DownloadImageAsyncViewModel: ObservableObject {
         //            }
         //            .store(in: &cancellable)
         
-        loader.downloadWithCombine()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: {_ in
-                
-            }, receiveValue: { [weak self] image in
-                self?.image = image
-            })
-            .store(in: &cancellable)
+//        loader.downloadWithCombine()
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveCompletion: {_ in
+//
+//            }, receiveValue: { [weak self] image in
+//                self?.image = image
+//            })
+//            .store(in: &cancellable)
+        
+        //Download image with async/Await
+        let image = try? await loader.downloadWithAsync()
+        // background thread issue if we use directly use main actor when using async
+//        self.image = image
+        await MainActor.run{
+            self.image = image
+        }
+       
     }
 }
 struct DownloadImageAsyncView: View {
@@ -96,7 +114,10 @@ struct DownloadImageAsyncView: View {
             }
         }
         .onAppear {
-            vm.fetchImage()
+            Task {
+                await vm.fetchImage()
+            }
+            
         }
     }
 }
