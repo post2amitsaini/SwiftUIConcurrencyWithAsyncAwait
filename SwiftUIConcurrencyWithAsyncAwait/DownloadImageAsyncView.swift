@@ -6,47 +6,81 @@
 //
 
 import SwiftUI
+import Combine
 
 class DownloadImageAsyncImageLoader {
     
     let url = URL(string: "https://picsum.photos/200")!
     
+    func handleResponse(data: Data?, response: URLResponse?) -> UIImage? {
+        guard
+            let data = data,
+            let image = UIImage(data: data),
+            let response = response as? HTTPURLResponse,
+            response.statusCode >= 200 && response.statusCode < 300 else {
+            return nil
+        }
+        return image
+    }
+    
     func downloadWithEscaping(completionHandler: @escaping (_ image: UIImage?,_ error: Error?) -> ()) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard
-                let data = data,
-                let image = UIImage(data: data),
-                let response = response as? HTTPURLResponse,
-                response.statusCode >= 200 && response.statusCode < 300 else {
-                completionHandler(nil, error)
-                return
-            }
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            let image = self?.handleResponse(data: data, response: response)
             completionHandler(image, nil)
         }
         .resume()
+    }
+    
+    func downloadWithCombine() -> AnyPublisher<UIImage?, Error> {
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map(handleResponse)
+            .mapError( { $0 })
+            .eraseToAnyPublisher()
     }
 }
 
 class DownloadImageAsyncViewModel: ObservableObject {
     @Published var image: UIImage? = nil
     var loader = DownloadImageAsyncImageLoader()
+    var cancellable = Set<AnyCancellable>()
     
     func fetchImage() {
         //Direct allocation
         //self.image = UIImage(systemName: "heart.fill")
         
         //Download with Escaping closure
-        loader.downloadWithEscaping { [weak self] image,error in
-//            if let image = image {
-//                self?.image = image
-//            } else {
-//                self?.image = UIImage(systemName: "heart.fill")
-//            }
-            DispatchQueue.main.async {
+        //        loader.downloadWithEscaping { [weak self] image,error in
+        //            //Main thread issue
+        //            /*
+        //            if let image = image {
+        //                self?.image = image
+        //            } else {
+        //                self?.image = UIImage(systemName: "heart.fill")
+        //            }
+        //             */
+        //            DispatchQueue.main.async {
+        //                self?.image = image
+        //            }
+        
+        //Download image with Combine
+        //        loader.downloadWithCombine()
+        //            .sink { _ in
+        //
+        //            } receiveValue: { [weak self] image in
+        //                DispatchQueue.main.async {
+        //                    self?.image = image
+        //                }
+        //            }
+        //            .store(in: &cancellable)
+        
+        loader.downloadWithCombine()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: {_ in
+                
+            }, receiveValue: { [weak self] image in
                 self?.image = image
-            }
-            
-        }
+            })
+            .store(in: &cancellable)
     }
 }
 struct DownloadImageAsyncView: View {
