@@ -12,6 +12,7 @@
 		A69211C72ACD86710005F3F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A69211C62ACD86710005F3F8 /* Assets.xcassets */; };
 		A69211CA2ACD86710005F3F8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A69211C92ACD86710005F3F8 /* Preview Assets.xcassets */; };
 		A69211D12ACD888D0005F3F8 /* DoTryCatchThrowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69211D02ACD888D0005F3F8 /* DoTryCatchThrowsView.swift */; };
+		A69211D32ACD8C100005F3F8 /* DownloadImageAsyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69211D22ACD8C100005F3F8 /* DownloadImageAsyncView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		A69211C62ACD86710005F3F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A69211C92ACD86710005F3F8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A69211D02ACD888D0005F3F8 /* DoTryCatchThrowsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoTryCatchThrowsView.swift; sourceTree = "<group>"; };
+		A69211D22ACD8C100005F3F8 /* DownloadImageAsyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImageAsyncView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				A69211C22ACD86700005F3F8 /* SwiftUIConcurrencyWithAsyncAwaitApp.swift */,
 				A69211C42ACD86700005F3F8 /* ContentView.swift */,
 				A69211D02ACD888D0005F3F8 /* DoTryCatchThrowsView.swift */,
+				A69211D22ACD8C100005F3F8 /* DownloadImageAsyncView.swift */,
 				A69211C62ACD86710005F3F8 /* Assets.xcassets */,
 				A69211C82ACD86710005F3F8 /* Preview Content */,
 			);
@@ -143,6 +146,7 @@
 				A69211C52ACD86700005F3F8 /* ContentView.swift in Sources */,
 				A69211D12ACD888D0005F3F8 /* DoTryCatchThrowsView.swift in Sources */,
 				A69211C32ACD86700005F3F8 /* SwiftUIConcurrencyWithAsyncAwaitApp.swift in Sources */,
+				A69211D32ACD8C100005F3F8 /* DownloadImageAsyncView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
