@@ -58,4 +58,41 @@ The result is a Combine publisher that emits the downloaded image or an error.
 
 This method showcases Swift's new concurrency features with async/await.        
 It asynchronously downloads the image data and processes the response in a more synchronous-looking fashion.        
-Errors are thrown in case of issues during the download.        
+Errors are thrown in case of issues during the download.   
+
+### Task and .task
+
+If you put vm.fetchImage() and vm.fetchImage2() calls in a single Task block like this:
+```
+Task {
+        await vm.fetchImage()
+        await vm.fetchImage2()
+}
+```
+the execution will suspend at the first task, and then the second task will execute. As a result, the first image will be displayed, and then after some time, the second image will be displayed. To resolve this issue and make both images appear simultaneously, you should create two separate Task blocks like this:
+```
+Task {
+        await vm.fetchImage()
+}
+Task {
+         await vm.fetchImage2()
+}
+```
+This will ensure that both tasks are executed simultaneously, and both images are displayed at the same time.
+
+##### Task priority: high, medium, low, userInitiated, utility, background
+```
+Task(priority: .medium) {
+    print("medium : \(Thread.current) : \(Task.currentPriority)")
+}
+```
+##### detached
+If you need to specify a different priority for a child task than its parent, you can use the detached function. The detached function creates a new task that is not bound to its parent task's priority.
+```
+Task(priority: .userInitiated) {
+     print("userInitiated : \(Thread.current) : \(Task.currentPriority)")
+        Task.detached {
+                print("detached : \(Thread.current) : \(Task.currentPriority)")
+        }
+}
+```
