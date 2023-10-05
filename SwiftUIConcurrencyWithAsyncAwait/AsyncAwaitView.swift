@@ -50,7 +50,7 @@ struct AsyncAwaitView: View {
         }
         .onAppear {
             Task {
-                vm.addAuthor
+                await vm.addAuthor()
             }
 //            vm.addTitle1()
 //            vm.addTitle2()
