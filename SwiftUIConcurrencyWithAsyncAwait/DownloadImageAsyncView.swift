@@ -12,6 +12,11 @@ class DownloadImageAsyncImageLoader {
     
     let url = URL(string: "https://picsum.photos/200")!
     
+    /// Handles the response data and returns a UIImage if successful.
+    /// - Parameters:
+    ///   - data: The downloaded data.
+    ///   - response: The URL response.
+    /// - Returns: A UIImage if the response is successful, otherwise nil.
     func handleResponse(data: Data?, response: URLResponse?) -> UIImage? {
         guard
             let data = data,
@@ -23,6 +28,8 @@ class DownloadImageAsyncImageLoader {
         return image
     }
     
+    /// Downloads an image using a completion handler with escaping closure.
+    /// - Parameter completionHandler: A closure to be executed with the downloaded image or an error.
     func downloadWithEscaping(completionHandler: @escaping (_ image: UIImage?,_ error: Error?) -> ()) {
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             let image = self?.handleResponse(data: data, response: response)
@@ -31,6 +38,8 @@ class DownloadImageAsyncImageLoader {
         .resume()
     }
     
+    /// Downloads an image using Combine and returns a publisher.
+    /// - Returns: A Combine publisher for downloading an image.
     func downloadWithCombine() -> AnyPublisher<UIImage?, Error> {
         URLSession.shared.dataTaskPublisher(for: url)
             .map(handleResponse)
@@ -38,6 +47,8 @@ class DownloadImageAsyncImageLoader {
             .eraseToAnyPublisher()
     }
     
+    /// Downloads an image asynchronously using async/await and returns a UIImage.
+    /// - Returns: A UIImage if the download is successful, otherwise an error is thrown.
     func downloadWithAsync() async throws -> UIImage? {
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
