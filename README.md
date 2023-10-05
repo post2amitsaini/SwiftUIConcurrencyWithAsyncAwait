@@ -58,4 +58,7 @@ The result is a Combine publisher that emits the downloaded image or an error.
 
 This method showcases Swift's new concurrency features with async/await.        
 It asynchronously downloads the image data and processes the response in a more synchronous-looking fashion.        
-Errors are thrown in case of issues during the download.        
+Errors are thrown in case of issues during the download.   
+
+### Task and .task
+
