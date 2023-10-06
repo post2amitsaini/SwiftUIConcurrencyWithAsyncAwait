@@ -11,7 +11,7 @@ import SwiftUI
 struct SwiftUIConcurrencyWithAsyncAwaitApp: App {
     var body: some Scene {
         WindowGroup {
-            AsyncLetView()
+            TaskGroupView()
         }
     }
 }
