@@ -19,7 +19,7 @@ import SwiftUI
      await manager.updateDatabase(userInfo: info)
  }
  
- Passing a String to an actor class does not cause problems because strings are reference types, making them Sendable by default.
+ Passing a String to an actor class does not cause problems because strings are value types, making them Sendable by default.
 
  If we pass Struct to actor class
  
