@@ -7,6 +7,47 @@
 
 import SwiftUI
 
+/*
+ In Simple application, we do not need Global actor.
+ But in complex application for eg.
+ GlobalActorViewModel method
+ func getData() {
+ //Suppose it is Heavy Complex method.
+ }
+ 
+ We are calling this method on main thread
+ .task {
+     await vm.getData()
+ }
+ 
+ In certain cases, executing heavy methods within tasks on the main actor or main thread can lead to performance issues.
+ 
+ When we want nonisolated method in Actor class, we normally add nonisolated keyword to that method eg.
+ 
+ nonisolated func getDataFromNetwork() -> [String] {
+     return ["abc", "xyz", "hello"]
+ }
+ 
+ To address this, we can use the nonisolated keyword for non-async functions or variables within an actor class. Conversely, when requiring async functions in regular classes, we employ Global actors.
+ 
+ To incorporate the async method func getData() async as part of the actor class "MyDataManager", a Global Actor is necessary. To make "MyDataManager" a Global Actor, create a shared instance of this actor outside the "MyDataManager" class.
+
+ This can be achieved by creating a class or structure with the @globalActor keyword, such as:
+
+ @globalActor struct MyFirstGlobalActor {
+     static var shared = MyDataManager()
+ }
+ By adding the @MyFirstGlobalActor attribute, there's no need for the async keyword. This method now belongs to the "MyDataManager" Actor class. Consequently, the code can be modified from:
+
+ func getData() async {
+ }
+ to
+
+ func getData() {
+ }
+ This approach helps maintain efficiency and avoid occupying the main thread with heavy tasks.
+ */
+
 @globalActor
 struct MYFirstGlobalActor {
     /*
@@ -31,27 +72,6 @@ class GlobalActorViewModel: ObservableObject {
     
     @MYFirstGlobalActor
     func getData() {
-        /*
-         In certain cases, executing heavy methods within tasks on the main actor or main thread can lead to performance issues. To address this, we can use the nonisolated keyword for non-async functions or variables within an actor class. Conversely, when requiring async functions in regular classes, we employ Global actors.
-
-         To incorporate the async method func getData() async as part of the actor class "MyDataManager", a Global Actor is necessary. To make "MyDataManager" a Global Actor, create a shared instance of this actor outside the "MyDataManager" class.
-
-         This can be achieved by creating a class or structure with the @globalActor keyword, such as:
-
-         @globalActor struct MyFirstGlobalActor {
-             static var shared = MyDataManager()
-         }
-         By adding the @MyFirstGlobalActor attribute, there's no need for the async keyword. This method now belongs to the "MyDataManager" Actor class. Consequently, the code can be modified from:
-
-         func getData() async {
-         }
-         to
-
-         func getData() {
-         }
-         This approach helps maintain efficiency and avoid occupying the main thread with heavy tasks.
-         */
-        
         Task {
             let data = await manager.getDataFromNetwork()
             await MainActor.run {
